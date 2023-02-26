@@ -21,13 +21,18 @@ file(GLOB PROJECT_SOURCES
     "include/*.h"
 )
 
+set(QRC_FILES
+    "assets/res.qrc"
+)
+
 qt_add_executable(${PROJECT_NAME}
     MANUAL_FINALIZATION
     ${PROJECT_SOURCES}
+    ${QRC_FILES}
 )
 
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR}/bin)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Widgets flatui autoassignment)
-target_include_directories(${PROJECT_NAME} PRIVATE include 3rdparty/FlatUI 3rdparty/AutoAssignment/include)
+target_include_directories(${PROJECT_NAME} PRIVATE include 3rdparty/FlatUI 3rdparty/AutoAssignment/include 3rdparty/AutoAssignment/verilog-parser)
 target_include_directories(${PROJECT_NAME} PRIVATE ${Qt${QT_VERSION_MAJOR}Widgets_INCLUDE_DIRS})

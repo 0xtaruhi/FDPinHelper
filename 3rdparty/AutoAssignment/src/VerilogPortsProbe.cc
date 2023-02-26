@@ -35,9 +35,8 @@ void VerilogPortsProbe::setFile(const std::string &filename) {
   if (file_handler_ == nullptr) {
     throw std::runtime_error("Could not open file " + filename);
   } else {
-    filename_ = new char[filename.size() + 1];
-    std::copy(filename.begin(), filename.end(), filename_);
-    filename_[filename.size()] = '\0';
+    filename_ = new char[strlen(filename.c_str()) + 1];
+    strcpy(filename_, filename.c_str());
   }
 }
 

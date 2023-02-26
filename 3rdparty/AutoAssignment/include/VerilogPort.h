@@ -17,6 +17,8 @@ struct VerilogPortRange {
   VerilogPortRange() : upper(0), lower(0) {}
   VerilogPortRange(int upper, int lower) : upper(upper), lower(lower) {}
 
+  bool isSingleBit() const { return upper == lower; }
+
   int upper;
   int lower;
 };

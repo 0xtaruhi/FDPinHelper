@@ -1,0 +1,6 @@
+<!DOCTYPE RCC>
+<RCC version="1.0">
+    <qresource prefix="/device">
+        <file alias="FDP3P7.xml">device/FDP3P7.xml</file>
+    </qresource>
+</RCC>

@@ -5,6 +5,7 @@
 #include <QString>
 #include <QTableView>
 #include <QWidget>
+#include <QList>
 
 namespace pinhelper {
 
@@ -18,18 +19,21 @@ class PinTableWidget : public QWidget {
    public:
     /// @brief Enum for the port direction.
     enum class Direction { Input, Output, Inout, Unknown };
-
+    
+    PinItem() = default;
     PinItem(int index, const QString &name, Direction direction,
             const QString &pin)
-        : index_(index), name_(name), direction_(direction), pin_(pin) {}
+        : name_(name), direction_(direction), pin_(pin) {}
 
-    auto index() const { return index_; }
     auto name() const { return name_; }
     auto direction() const { return direction_; }
     auto pin() const { return pin_; }
 
+    auto setName(const QString &name) { name_ = name; }
+    auto setDirection(Direction direction) { direction_ = direction; }
+    auto setPin(const QString &pin) { pin_ = pin; }
+
    private:
-    int index_;
     QString name_;
     Direction direction_;
     QString pin_;
@@ -45,6 +49,9 @@ class PinTableWidget : public QWidget {
 
   /// @brief Method. Add Item to the table.
   void addItem(const PinItem &item);
+
+  /// @brief Method. Clear the table.
+  void clear();
 
  protected:
   /// @brief Override the resize event.
@@ -74,7 +81,7 @@ class PinTableWidget : public QWidget {
  private:
   QTableView *table_view_;
   QStandardItemModel *table_model_;
-  QVector<PinItem> pin_items_;
+  QList<PinItem> pin_items_;
 };
 
 }  // namespace pinhelper

@@ -1,7 +1,7 @@
 #include "PinTableWidget.h"
 
 #include <QHeaderView>
-#include <QVector>
+#include <QList>
 
 using namespace pinhelper;
 
@@ -19,6 +19,15 @@ auto getDirectionName(const PinTableWidget::PinItem::Direction &direction) {
   return "";
 }
 
+auto getRow(const PinTableWidget::PinItem &pin) {
+  QList<QStandardItem *> row;
+  row.resize(3);
+  row[0] = new QStandardItem(pin.name());
+  row[1] = new QStandardItem(getDirectionName(pin.direction()));
+  row[2] = new QStandardItem(pin.pin());
+  return row;
+}
+
 PinTableWidget::PinTableWidget(QWidget *parent) : QWidget(parent) {
   initUi();
   initConnections();
@@ -28,6 +37,12 @@ PinTableWidget::~PinTableWidget() = default;
 
 void PinTableWidget::addItem(const PinItem &item) {
   pin_items_.push_back(item);
+  table_model_->appendRow(getRow(item));
+}
+
+void PinTableWidget::clear() {
+  pin_items_.clear();
+  table_model_->clear();
 }
 
 void PinTableWidget::resizeEvent(QResizeEvent *event) {
@@ -46,11 +61,9 @@ void PinTableWidget::initUi() {
 void PinTableWidget::initConnections() {}
 
 void PinTableWidget::initTableModel() {
-  table_model_->setColumnCount(4);
-  table_model_->setRowCount(3);
+  table_model_->setColumnCount(3);
 
-  const QVector<QString> header_name = {tr("Index"), tr("Name"),
-                                        tr("Direction"), tr("Pin")};
+  const QVector<QString> header_name = {tr("Name"), tr("Direction"), tr("Pin")};
   for (int i = 0; i < header_name.size(); ++i) {
     table_model_->setHeaderData(i, Qt::Horizontal, header_name[i]);
   }
@@ -62,13 +75,14 @@ void PinTableWidget::initTableView() {
 }
 
 void PinTableWidget::updateItem(const size_t index, const PinItem &item) {
-  QVector<QStandardItem *> row_items{
-      new QStandardItem(QString::number(item.index())),
-      new QStandardItem(item.name()),
-      new QStandardItem(getDirectionName(item.direction())),
-      new QStandardItem(item.pin())};
+  Q_ASSERT(index < pin_items_.size());
+  auto &pin = pin_items_[index];
+  pin.setName(item.name());
+  pin.setDirection(item.direction());
+  pin.setPin(item.pin());
 
-  for (int i = 0; i < row_items.size(); ++i) {
-    table_model_->setItem(index, i, row_items[i]);
+  auto row = getRow(pin);
+  for (int i = 0; i < row.size(); ++i) {
+    table_model_->setItem(index, i, row[i]);
   }
 }
