@@ -11,7 +11,8 @@
 
 #include "FlatUI.h"
 #include "PinTableWidget.h"
-#include "VerilogPortsProbe.h"
+// #include "VerilogPortsProbe.h"
+#include "AutoAssignHandler.h"
 
 namespace pinhelper {
 
@@ -62,7 +63,8 @@ class PinHelper : public QMainWindow {
   QLabel* export_type_label_;
   QComboBox* export_type_combo_box_;
 
-  ufde::auto_assignment::VerilogPortsProbe* ports_prober_;
+  // ufde::auto_assignment::VerilogPortsProbe* ports_prober_;
+  AutoAssignHandler* auto_assign_handler_;
 };
 
 }  // namespace pinhelper

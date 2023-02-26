@@ -22,10 +22,10 @@ PinHelper::PinHelper(QWidget *parent) : QMainWindow(parent) {
   initUi();
   initConnections();
 
-  ports_prober_ = new ufde::auto_assignment::VerilogPortsProbe();
+  auto_assign_handler_ = new AutoAssignHandler(this);
 }
 
-PinHelper::~PinHelper() { delete ports_prober_; }
+PinHelper::~PinHelper() = default;
 
 QSize PinHelper::sizeHint() const { return {kDefaultWidth, kDefaultHeight}; }
 
@@ -121,34 +121,13 @@ void PinHelper::initConnections() {
 
 void PinHelper::probeVerilogFile() {
   auto filepath = filepath_line_edit_->text();
-  if (filepath.isEmpty()) {
-    QMessageBox::warning(this, tr("Warning"), tr("Please select a file."));
-    return;
-  }
-  // Check if file exists
-  if (!QFile::exists(filepath)) {
-    QMessageBox::warning(this, tr("Warning"), tr("File does not exist."));
-    return;
-  }
 
-  auto filepath_stdstr = filepath.toStdString();
-  ports_prober_->setFile(filepath_stdstr);
-  ports_prober_->resolve();
-
-  auto module_names = ports_prober_->getModuleNames();
-  if (module_names.empty()) {
-    QMessageBox::warning(this, tr("Warning"), tr("No module found."));
-    return;
-  }
-
-  auto module_index = 0;
-
-  auto module_num = module_names.size();
-  if (module_num > 1) {
+  auto multiModulesProcess = [=](const QStringList &module_names) {
+    auto module_index = 0;
+    auto module_num = module_names.size();
     auto module_select_dialog = new ModulesSelectDialog();
-    for (const auto &module_name : module_names) {
-      module_select_dialog->addItem(QString::fromStdString(module_name));
-    }
+
+    module_select_dialog->addItems(module_names);
     module_select_dialog->updateListWidget();
 
     auto itemSelected = [&module_index](const size_t index) {
@@ -159,53 +138,39 @@ void PinHelper::probeVerilogFile() {
     connect(module_select_dialog, &ModulesSelectDialog::itemSelected,
             itemSelected);
     connect(module_select_dialog, &ModulesSelectDialog::rejected, rejected);
-    module_select_dialog->exec();
 
+    module_select_dialog->exec();
     if (module_index == -1) {
       return;
     }
+    this->auto_assign_handler_->setModuleName(module_names[module_index]);
+  };
+  connect(auto_assign_handler_, &AutoAssignHandler::multipleModulesFound,
+          multiModulesProcess);
+
+  try {
+    auto_assign_handler_->setFilepath(filepath);
+    auto_assign_handler_->resolveModules();
+  } catch (const QString &msg) {
+    QMessageBox::warning(this, tr("Warning"), msg);
+    return;
   }
 
-  auto module_name = module_names[module_index];
-  auto ports = ports_prober_->getPorts(module_name);
-
-  auto directionTransform =
-      [](const ufde::auto_assignment::VerilogPortDirection &direction) {
-        switch (direction) {
-          case ufde::auto_assignment::VerilogPortDirection::INPUT:
-            return PinTableWidget::PinItem::Direction::Input;
-          case ufde::auto_assignment::VerilogPortDirection::OUTPUT:
-            return PinTableWidget::PinItem::Direction::Output;
-          case ufde::auto_assignment::VerilogPortDirection::INOUT:
-            return PinTableWidget::PinItem::Direction::Inout;
-          default:
-            return PinTableWidget::PinItem::Direction::Unknown;
-        }
-        return PinTableWidget::PinItem::Direction::Unknown;
-      };
-
-  auto addToPinTable = [&](const ufde::auto_assignment::VerilogPort &port) {
-    PinTableWidget::PinItem pin_item;
-    pin_item.setName(QString::fromStdString(port.name));
-    pin_item.setDirection(directionTransform(port.direction));
-    pin_table_->addItem(pin_item);
-  };
-
+  const auto &ports = auto_assign_handler_->getPorts();
   pin_table_->clear();
 
-  for (const auto &port : ports) {
-    if (port.range.isSingleBit()) {
-      addToPinTable(port);
-    } else {
-      auto range = port.range;
-      auto step = range.upper > range.lower ? 1 : -1;
-      for (auto i = range.lower; i != range.upper + step; i += step) {
-        auto port_copy = port;
-        port_copy.name += "[" + std::to_string(i) + "]";
-        addToPinTable(port_copy);
-      }
-    }
+  auto explicit_clock = !explicit_clock_checkbox_->isChecked();
+  auto clock_name = explicit_clock ? explicit_clock_line_edit_->text() : "clk";
+  // auto pins = AutoAssignHandler::defaultAssign(ports, clock_name, "FDP3P7");
+  QList<PinTableWidget::PinItem> pins;
+  try {
+    pins = auto_assign_handler_->defaultAssign(ports, clock_name, "FDP3P7");
+  } catch (const QString &msg) {
+    QMessageBox::warning(this, tr("Warning"), msg);
+    return;
   }
+
+  pin_table_->addItems(pins);
 }
 
 void PinHelper::on_import_btn_clicked() {

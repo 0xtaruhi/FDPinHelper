@@ -40,9 +40,16 @@ void PinTableWidget::addItem(const PinItem &item) {
   table_model_->appendRow(getRow(item));
 }
 
+void PinTableWidget::addItems(const QList<PinItem> &items) {
+  for (const auto &item : items) {
+    addItem(item);
+  }
+}
+
 void PinTableWidget::clear() {
   pin_items_.clear();
   table_model_->clear();
+  initTableModel();
 }
 
 void PinTableWidget::resizeEvent(QResizeEvent *event) {
@@ -54,6 +61,7 @@ void PinTableWidget::initUi() {
   table_model_ = new QStandardItemModel(this);
 
   initTableModel();
+  initTableView();
 
   table_view_->setModel(table_model_);
 }
@@ -71,7 +79,9 @@ void PinTableWidget::initTableModel() {
 
 void PinTableWidget::initTableView() {
   auto *header = table_view_->horizontalHeader();
-  header->setSectionResizeMode(QHeaderView::ResizeToContents);
+  // header->setSectionResizeMode(QHeaderView::ResizeToContents);
+  header->setMinimumWidth(80);
+  header->setStretchLastSection(true);
 }
 
 void PinTableWidget::updateItem(const size_t index, const PinItem &item) {

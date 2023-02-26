@@ -21,7 +21,7 @@ class PinTableWidget : public QWidget {
     enum class Direction { Input, Output, Inout, Unknown };
     
     PinItem() = default;
-    PinItem(int index, const QString &name, Direction direction,
+    PinItem(const QString &name, Direction direction,
             const QString &pin)
         : name_(name), direction_(direction), pin_(pin) {}
 
@@ -49,6 +49,9 @@ class PinTableWidget : public QWidget {
 
   /// @brief Method. Add Item to the table.
   void addItem(const PinItem &item);
+
+  /// @brief Method, Add Items to the table.
+  void addItems(const QList<PinItem> &items);
 
   /// @brief Method. Clear the table.
   void clear();
