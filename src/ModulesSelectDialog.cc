@@ -52,6 +52,10 @@ void ModulesSelectDialog::initUi() {
 void ModulesSelectDialog::initConnections() {
   connect(list_widget_, &QListWidget::itemDoubleClicked, this,
           &ModulesSelectDialog::on_ok_btn_clicked);
+  connect(ok_btn_, &QPushButton::clicked, this,
+          &ModulesSelectDialog::on_ok_btn_clicked);
+  connect(cancel_btn_, &QPushButton::clicked, this,
+          &ModulesSelectDialog::on_cancel_btn_clicked);
 }
 
 void ModulesSelectDialog::updateListWidget() {

@@ -96,10 +96,17 @@ auto AutoAssignHandler::defaultAssign(const QList<VerilogPort>& ports,
   using PinItem = PinTableWidget::PinItem;
   using VerilogPortDirection = ufde::auto_assignment::VerilogPortDirection;
 
+  bool clock_found = false;
+
   for (const auto& port : ports) {
     if (port.name == clk_name.toStdString()) {
+      if (clock_found) {
+        throw QString(tr("Multiple clock pins found"));
+        return {};
+      }
       pin_items.push_back(PinItem(QString::fromStdString(port.name),
                                   PinItem::Direction::Input, clock_pin));
+      clock_found = true;
       continue;
     } else if (port.direction == VerilogPortDirection::INPUT) {
       if (input_pins_it == input_pins.end()) {

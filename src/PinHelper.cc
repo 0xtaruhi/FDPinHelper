@@ -80,7 +80,7 @@ void PinHelper::initUi() {
   settings_layout->setContentsMargins(10, 10, 10, 10);
 
   settings_group->setLayout(settings_layout);
-  settings_group->setFixedHeight(settings_layout->sizeHint().height() + 20);
+  settings_group->setFixedHeight(settings_layout->sizeHint().height() + 30);
 
   main_layout->addWidget(settings_group);
 
