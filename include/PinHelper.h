@@ -11,8 +11,8 @@
 
 #include "FlatUI.h"
 #include "PinTableWidget.h"
-// #include "VerilogPortsProbe.h"
 #include "AutoAssignHandler.h"
+#include "ExportHandler.h"
 
 namespace pinhelper {
 
@@ -46,6 +46,9 @@ class PinHelper : public QMainWindow {
   /// @brief Slot. Open file dialog when import button is clicked.
   void on_import_btn_clicked();
 
+  /// @brief Slot. Export pin infomation to file.
+  void on_export_btn_clicked();
+
   void on_explicit_clock_checkbox_stateChanged(int state);
 
  private:
@@ -63,8 +66,8 @@ class PinHelper : public QMainWindow {
   QLabel* export_type_label_;
   QComboBox* export_type_combo_box_;
 
-  // ufde::auto_assignment::VerilogPortsProbe* ports_prober_;
   AutoAssignHandler* auto_assign_handler_;
+  ExportHandler* export_handler_;
 };
 
 }  // namespace pinhelper

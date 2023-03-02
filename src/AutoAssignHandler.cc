@@ -33,7 +33,12 @@ void AutoAssignHandler::setModuleName(const QString& module_name) {
 
 void AutoAssignHandler::resolveModules() {
   ports_prober_->setFile(filepath_);
-  ports_prober_->resolve();
+  try {
+    ports_prober_->resolve();
+  } catch (std::runtime_error err) {
+    throw QString(err.what());
+    return;
+  }
 
   const auto& module_names = ports_prober_->getModuleNames();
   if (module_names.size() == 0) {

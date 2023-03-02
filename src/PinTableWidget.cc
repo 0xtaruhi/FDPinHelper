@@ -46,6 +46,10 @@ void PinTableWidget::addItems(const QList<PinItem> &items) {
   }
 }
 
+const QList<PinTableWidget::PinItem> &PinTableWidget::getItems() const {
+  return pin_items_;
+}
+
 void PinTableWidget::clear() {
   pin_items_.clear();
   table_model_->clear();

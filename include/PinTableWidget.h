@@ -53,6 +53,9 @@ class PinTableWidget : public QWidget {
   /// @brief Method, Add Items to the table.
   void addItems(const QList<PinItem> &items);
 
+  /// @brief Method, Get the pin items.
+  const QList<PinItem> &getItems() const;
+
   /// @brief Method. Clear the table.
   void clear();
 

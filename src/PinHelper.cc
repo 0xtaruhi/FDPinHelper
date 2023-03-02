@@ -12,9 +12,9 @@
 #include "ModulesSelectDialog.h"
 
 constexpr auto kDefaultWidth = 500;
-constexpr auto kDefaultHeight = 300;
+constexpr auto kDefaultHeight = 400;
 constexpr auto kMinimumWidth = 400;
-constexpr auto kMinimumHeight = 300;
+constexpr auto kMinimumHeight = 350;
 
 using namespace pinhelper;
 
@@ -23,6 +23,8 @@ PinHelper::PinHelper(QWidget *parent) : QMainWindow(parent) {
   initConnections();
 
   auto_assign_handler_ = new AutoAssignHandler(this);
+  export_handler_ = new ExportHandler(this);
+  export_handler_->setPinTableWidget(pin_table_);
 }
 
 PinHelper::~PinHelper() = default;
@@ -117,6 +119,8 @@ void PinHelper::initConnections() {
   connect(import_btn_, &QPushButton::clicked, this, &on_import_btn_clicked);
   connect(explicit_clock_checkbox_, &QCheckBox::stateChanged, this,
           &on_explicit_clock_checkbox_stateChanged);
+
+  connect(export_btn_, &QPushButton::clicked, this, &on_export_btn_clicked);
 }
 
 void PinHelper::probeVerilogFile() {
@@ -200,6 +204,19 @@ void PinHelper::on_import_btn_clicked() {
   connect(file_dialog, &QFileDialog::fileSelected, fileSelected);
 
   file_dialog->show();
+}
+
+void PinHelper::on_export_btn_clicked() {
+  auto write_filepath = QFileDialog::getSaveFileName(nullptr, tr("Export"), "",
+                                                     tr("XML Files (*.xml)"));
+  try {
+    export_handler_->exportFile(write_filepath, "XML");
+  } catch (const QString &msg) {
+    QMessageBox::warning(this, tr("Warning"), msg);
+    return;
+  }
+
+  QMessageBox::information(nullptr, tr("Export"), tr("Export Successful!"));
 }
 
 void PinHelper::on_explicit_clock_checkbox_stateChanged(int state) {
