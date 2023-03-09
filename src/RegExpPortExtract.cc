@@ -32,7 +32,7 @@ VerilogPortRange getPortRange(const QString &port_range) {
     if (range_str.endsWith("]")) {
       range_str.remove(range_str.size() - 1, 1);
     }
-    
+
     QStringList port_range_list = range_str.split(":");
     if (port_range_list.size() != 2) {
       throw QString("Port range error: %1").arg(port_range);
@@ -167,13 +167,13 @@ void RegExpPortExtract::resolvePorts(const QString &module_name) {
   }
 }
 
-QList<VerilogPort>
-RegExpPortExtract::getPorts(const QString &module_name) const {
+QList<VerilogPort> RegExpPortExtract::getPorts(
+    const QString &module_name) const {
   return module_ports_[module_name];
 }
 
-const QMap<QString, QList<VerilogPort>> &
-RegExpPortExtract::getModulePorts() const {
+const QMap<QString, QList<VerilogPort>> &RegExpPortExtract::getModulePorts()
+    const {
   return module_ports_;
 }
 

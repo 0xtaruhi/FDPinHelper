@@ -2,10 +2,10 @@
 #define MODULES_SELECT_DIALOG_H
 
 #include <QDialog>
+#include <QLabel>
 #include <QListWidget>
 #include <QPushButton>
 #include <QStringList>
-#include <QLabel>
 
 namespace pinhelper {
 
@@ -56,7 +56,7 @@ class ModulesSelectDialog : public QDialog {
   void on_cancel_btn_clicked();
 
  signals:
-  void itemSelected(const QString& module_name);
+  void itemSelected(const QString &module_name);
 
  private:
   QStringList items_;

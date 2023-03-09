@@ -6,7 +6,6 @@
 #include <QObject>
 #include <QString>
 
-
 namespace pinhelper {
 
 /// @brief Class for the device pin reader. It can read the ports from XML file
@@ -29,7 +28,7 @@ class DevicePinReader : public QObject {
   /// @brief Get the input pins.
   /// @return List of input pins.
   const QList<QString>& getInputPins() const;
-  
+
   /// @brief Get the output pins.
   /// @return List of output pins.
   const QList<QString>& getOutputPins() const;

@@ -1,7 +1,6 @@
 #ifndef REG_EXP_PORT_EXTRACT_H
 #define REG_EXP_PORT_EXTRACT_H
 
-#include "VerilogPort.h"
 #include <QFile>
 #include <QList>
 #include <QMap>
@@ -9,11 +8,13 @@
 #include <QString>
 #include <QStringList>
 
+#include "VerilogPort.h"
+
 namespace ufde::auto_assignment {
 
 class RegExpPortExtract : public QObject {
   Q_OBJECT
-public:
+ public:
   RegExpPortExtract(QObject *parent = nullptr);
   virtual ~RegExpPortExtract();
 
@@ -35,12 +36,12 @@ public:
   const QMap<QString, QList<VerilogPort>> &getModulePorts() const;
   QMap<QString, QList<VerilogPort>> &getModulePorts();
 
-private:
-  QString filename_;                               ///< File name
-  QStringList module_names_;                       ///< Module names
-  QMap<QString, QList<VerilogPort>> module_ports_; ///< Module ports
+ private:
+  QString filename_;                                ///< File name
+  QStringList module_names_;                        ///< Module names
+  QMap<QString, QList<VerilogPort>> module_ports_;  ///< Module ports
 };
 
-} // namespace ufde::auto_assignment
+}  // namespace ufde::auto_assignment
 
-#endif // REG_EXP_PORT_EXTRACT_H
+#endif  // REG_EXP_PORT_EXTRACT_H

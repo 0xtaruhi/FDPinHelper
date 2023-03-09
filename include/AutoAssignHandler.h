@@ -18,7 +18,7 @@ class AutoAssignHandler : public QObject {
   using RegExpPortExtract = ufde::auto_assignment::RegExpPortExtract;
   using VerilogPort = ufde::auto_assignment::VerilogPort;
 
-public:
+ public:
   /// @brief Constructor.
   /// @param parent Parent widget.
   AutoAssignHandler(QObject *parent = nullptr);
@@ -53,26 +53,25 @@ public:
   /// @return List of ports.
   const QList<VerilogPort> &getPorts() const noexcept;
 
-  static QList<PinTableWidget::PinItem>
-  defaultAssign(const QList<VerilogPort> &ports,
-                const QString &clk_name = "clk",
-                const QString &device_name = "FDP3P7");
+  static QList<PinTableWidget::PinItem> defaultAssign(
+      const QList<VerilogPort> &ports, const QString &clk_name = "clk",
+      const QString &device_name = "FDP3P7");
 
-signals:
+ signals:
   /// @brief Signal. Emitted when multiple modules are found in the verilog
   /// file.
   void multipleModulesFound(QStringList modules);
 
-private:
+ private:
   void resolvePorts();
 
-private:
-  QString module_name_; ///< Name of the module.
+ private:
+  QString module_name_;  ///< Name of the module.
 
-  QList<VerilogPort> ports_;    ///< List of ports.
-  RegExpPortExtract* extracter_; ///< RegExpPortExtract instance
+  QList<VerilogPort> ports_;      ///< List of ports.
+  RegExpPortExtract *extracter_;  ///< RegExpPortExtract instance
 };
 
-} // namespace pinhelper
+}  // namespace pinhelper
 
-#endif // AUTO_ASSIGN_HANDLER_H
+#endif  // AUTO_ASSIGN_HANDLER_H

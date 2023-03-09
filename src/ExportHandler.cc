@@ -1,7 +1,7 @@
 #include "ExportHandler.h"
 
-#include <QXmlStreamWriter>
 #include <QFile>
+#include <QXmlStreamWriter>
 
 using namespace pinhelper;
 
@@ -21,7 +21,8 @@ void ExportHandler::exportFile(const QString& filepath, FileType file_type) {
   }
 }
 
-void ExportHandler::exportFile(const QString& filepath, const QString& file_type) {
+void ExportHandler::exportFile(const QString& filepath,
+                               const QString& file_type) {
   if (file_type == "XML") {
     exportXML(filepath);
   } else if (file_type == "JSON") {
@@ -37,7 +38,7 @@ void ExportHandler::exportXML(const QString& filepath) {
     throw QString(tr("Could not open file %1 for writing.").arg(filepath));
     return;
   }
-  
+
   const auto& pin_assignments = pin_table_widget_->getItems();
 
   writer.setDevice(&file);
@@ -56,6 +57,4 @@ void ExportHandler::exportXML(const QString& filepath) {
   writer.writeEndDocument();
 }
 
-void ExportHandler::exportJSON(const QString& filepath) {
-
-}
+void ExportHandler::exportJSON(const QString& filepath) {}

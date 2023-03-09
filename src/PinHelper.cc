@@ -123,8 +123,8 @@ void PinHelper::initConnections() {
   connect(export_btn_, &QPushButton::clicked, this, &on_export_btn_clicked);
   connect(auto_assign_handler_, &AutoAssignHandler::multipleModulesFound, this,
           &multiModulesProcess);
-  connect(module_select_dialog_handler_, &ModulesSelectDialog::itemSelected, this,
-          &on_module_selected);
+  connect(module_select_dialog_handler_, &ModulesSelectDialog::itemSelected,
+          this, &on_module_selected);
 }
 
 void PinHelper::probeVerilogFile() {
@@ -216,6 +216,6 @@ void PinHelper::on_explicit_clock_checkbox_stateChanged(int state) {
   }
 }
 
-void PinHelper::on_module_selected(const QString& module_name) {
+void PinHelper::on_module_selected(const QString &module_name) {
   auto_assign_handler_->setModuleName(module_name);
 }

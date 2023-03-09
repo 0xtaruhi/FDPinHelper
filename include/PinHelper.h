@@ -21,7 +21,7 @@ namespace pinhelper {
 class PinHelper : public QMainWindow {
   Q_OBJECT
 
-public:
+ public:
   /// @brief Constructor.
   /// @param parent Parent widget.
   PinHelper(QWidget *parent = nullptr);
@@ -29,11 +29,11 @@ public:
   /// @brief Destructor.
   ~PinHelper() override;
 
-protected:
+ protected:
   /// @brief Size Hint
   QSize sizeHint() const override;
 
-private:
+ private:
   /// @brief Initialize the UI.
   void initUi();
 
@@ -45,9 +45,9 @@ private:
 
   /// @brief Multi-Modules Process. It will show a dialog to let the user select
   /// a module.
-  void multiModulesProcess(const QStringList& module_names);
+  void multiModulesProcess(const QStringList &module_names);
 
-private slots:
+ private slots:
   /// @brief Slot. Open file dialog when import button is clicked.
   void on_import_btn_clicked();
 
@@ -56,9 +56,9 @@ private slots:
 
   void on_explicit_clock_checkbox_stateChanged(int state);
 
-  void on_module_selected(const QString& module_name);
+  void on_module_selected(const QString &module_name);
 
-private:
+ private:
   PinTableWidget *pin_table_;
 
   QLabel *filepath_label_;
@@ -79,6 +79,6 @@ private:
   ModulesSelectDialog *module_select_dialog_handler_;
 };
 
-} // namespace pinhelper
+}  // namespace pinhelper
 
-#endif // PIN_HELPER_H
+#endif  // PIN_HELPER_H

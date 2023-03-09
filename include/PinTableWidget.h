@@ -1,11 +1,11 @@
 #ifndef PIN_TABLE_WIDGET_H
 #define PIN_TABLE_WIDGET_H
 
+#include <QList>
 #include <QStandardItemModel>
 #include <QString>
 #include <QTableView>
 #include <QWidget>
-#include <QList>
 
 namespace pinhelper {
 
@@ -19,10 +19,9 @@ class PinTableWidget : public QWidget {
    public:
     /// @brief Enum for the port direction.
     enum class Direction { Input, Output, Inout, Unknown };
-    
+
     PinItem() = default;
-    PinItem(const QString &name, Direction direction,
-            const QString &pin)
+    PinItem(const QString &name, Direction direction, const QString &pin)
         : name_(name), direction_(direction), pin_(pin) {}
 
     auto name() const { return name_; }
