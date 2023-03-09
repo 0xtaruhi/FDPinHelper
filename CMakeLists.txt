@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-project(FDPinHelper VERSION 0.1 LANGUAGES CXX)
+project(FDPinHelper VERSION 1.0 LANGUAGES CXX)
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOMOC ON)
@@ -31,6 +31,8 @@ set(SUPPORT_LANGUAGE zh_CN)
 foreach(LANG ${SUPPORT_LANGUAGE})
     set(TS_FILES ${TS_FILES} ${TS_LOCATION}/${PROJECT_NAME}_${LANG}.ts)
 endforeach()
+
+configure_file(${CMAKE_SOURCE_DIR}/include/Config.h.in ${CMAKE_SOURCE_DIR}/include/Config.h)
 
 qt_add_executable(${PROJECT_NAME}
     MANUAL_FINALIZATION

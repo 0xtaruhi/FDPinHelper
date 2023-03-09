@@ -86,6 +86,8 @@ void PinTableWidget::initTableView() {
   // header->setSectionResizeMode(QHeaderView::ResizeToContents);
   header->setMinimumWidth(80);
   header->setStretchLastSection(true);
+
+  table_view_->setEditTriggers(QAbstractItemView::NoEditTriggers);
 }
 
 void PinTableWidget::updateItem(const qsizetype index, const PinItem &item) {

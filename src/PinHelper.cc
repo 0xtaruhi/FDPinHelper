@@ -8,6 +8,7 @@
 #include <QResizeEvent>
 #include <string>
 
+#include "Config.h"
 #include "FlatUI.h"
 #include "ModulesSelectDialog.h"
 
@@ -32,6 +33,8 @@ PinHelper::~PinHelper() = default;
 QSize PinHelper::sizeHint() const { return {kDefaultWidth, kDefaultHeight}; }
 
 void PinHelper::initUi() {
+  this->setWindowTitle(tr("Pin Helper").append(" - ").append(PROJECT_VERSION));
+
   //   this->setStyleSheet("background-color: white;");
   QWidget *central_widget = new QWidget(this);
 
