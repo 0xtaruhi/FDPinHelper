@@ -4,13 +4,13 @@
 
 using namespace pinhelper;
 
-AutoAssignHandler::AutoAssignHandler(QObject* parent) : QObject(parent) {
-  ports_prober_ = new VerilogPortsProbe();
+AutoAssignHandler::AutoAssignHandler(QObject *parent) : QObject(parent) {
+  extracter_ = new RegExpPortExtract(this);
 }
 
-AutoAssignHandler::~AutoAssignHandler() { delete ports_prober_; }
+AutoAssignHandler::~AutoAssignHandler() = default;
 
-void AutoAssignHandler::setFilepath(const QString& filepath) {
+void AutoAssignHandler::setFilepath(const QString &filepath) {
   if (filepath.isEmpty()) {
     throw QString(tr("Filepath is empty"));
     return;
@@ -19,28 +19,26 @@ void AutoAssignHandler::setFilepath(const QString& filepath) {
     throw QString(tr("Filepath does not exist"));
     return;
   }
-  filepath_ = filepath.toStdString();
+  extracter_->setFile(filepath);
 }
 
-void AutoAssignHandler::setModuleName(const QString& module_name) {
+void AutoAssignHandler::setModuleName(const QString &module_name) {
   if (module_name.isEmpty()) {
     throw QString(tr("Module name is empty"));
     return;
   }
-  module_name_ = module_name.toStdString();
+  module_name_ = module_name;
   resolvePorts();
 }
 
 void AutoAssignHandler::resolveModules() {
-  ports_prober_->setFile(filepath_);
   try {
-    ports_prober_->resolve();
-  } catch (std::runtime_error err) {
-    throw QString(err.what());
-    return;
+    extracter_->resolveModules();
+  } catch (const QString &err) {
+    throw err;
   }
 
-  const auto& module_names = ports_prober_->getModuleNames();
+  const auto &module_names = extracter_->getModuleNames();
   if (module_names.size() == 0) {
     throw QString(tr("No module found"));
     return;
@@ -52,48 +50,46 @@ void AutoAssignHandler::resolveModules() {
     return;
   }
 
-  QStringList module_names_qt;
-  for (const auto& module_name : module_names) {
-    module_names_qt.append(QString::fromStdString(module_name));
-  }
-  emit multipleModulesFound(module_names_qt);
+  emit multipleModulesFound(module_names);
 }
 
 void AutoAssignHandler::resolvePorts() {
   ports_.clear();
-  auto ports_from_prober = ports_prober_->getPorts(module_name_);
+  extracter_->resolvePorts(module_name_);
+  auto ports_from_prober = extracter_->getPorts(module_name_);
 
-  for (const auto& port : ports_from_prober) {
+  for (const auto &port : ports_from_prober) {
     if (port.range.isSingleBit()) {
       ports_.push_back(port);
     } else {
-      auto& range = port.range;
+      auto &range = port.range;
       auto step = range.upper > range.lower ? 1 : -1;
       for (auto i = range.lower; i != range.upper + step; i += step) {
         VerilogPort port_with_range = port;
-        port_with_range.name += "[" + std::to_string(i) + "]";
+        port_with_range.name.append(QString("[%1]").arg(i));
         ports_.push_back(port_with_range);
       }
     }
   }
 }
 
-auto AutoAssignHandler::getPorts() const noexcept -> const QList<VerilogPort>& {
+auto AutoAssignHandler::getPorts() const noexcept
+    -> const QList<VerilogPort> & {
   return ports_;
 }
 
-auto AutoAssignHandler::defaultAssign(const QList<VerilogPort>& ports,
-                                      const QString& clk_name,
-                                      const QString& device_name)
+auto AutoAssignHandler::defaultAssign(const QList<VerilogPort> &ports,
+                                      const QString &clk_name,
+                                      const QString &device_name)
     -> QList<PinTableWidget::PinItem> {
   QList<PinTableWidget::PinItem> pin_items;
   DevicePinReader device_pin_reader;
   device_pin_reader.readDeviceInformation(
       QString(":/device/%1.xml").arg(device_name));
 
-  const auto& input_pins = device_pin_reader.getInputPins();
-  const auto& output_pins = device_pin_reader.getOutputPins();
-  const auto& clock_pin = device_pin_reader.getClockPin();
+  const auto &input_pins = device_pin_reader.getInputPins();
+  const auto &output_pins = device_pin_reader.getOutputPins();
+  const auto &clock_pin = device_pin_reader.getClockPin();
 
   auto input_pins_it = input_pins.begin();
   auto output_pins_it = output_pins.begin();
@@ -103,14 +99,14 @@ auto AutoAssignHandler::defaultAssign(const QList<VerilogPort>& ports,
 
   bool clock_found = false;
 
-  for (const auto& port : ports) {
-    if (port.name == clk_name.toStdString()) {
+  for (const auto &port : ports) {
+    if (port.name == clk_name) {
       if (clock_found) {
         throw QString(tr("Multiple clock pins found"));
         return {};
       }
-      pin_items.push_back(PinItem(QString::fromStdString(port.name),
-                                  PinItem::Direction::Input, clock_pin));
+      pin_items.push_back(
+          PinItem(port.name, PinItem::Direction::Input, clock_pin));
       clock_found = true;
       continue;
     } else if (port.direction == VerilogPortDirection::INPUT) {
@@ -118,16 +114,15 @@ auto AutoAssignHandler::defaultAssign(const QList<VerilogPort>& ports,
         throw QString("Not enough input pins, max input pins: %1")
             .arg(input_pins.size());
       }
-      pin_items.push_back(PinItem(QString::fromStdString(port.name),
-                                  PinItem::Direction::Input, *input_pins_it++));
+      pin_items.push_back(
+          PinItem(port.name, PinItem::Direction::Input, *input_pins_it++));
     } else if (port.direction == VerilogPortDirection::OUTPUT) {
       if (output_pins_it == output_pins.end()) {
         throw QString("Not enough output pins, max output pins: %1")
             .arg(output_pins.size());
       }
-      pin_items.push_back(PinItem(QString::fromStdString(port.name),
-                                  PinItem::Direction::Output,
-                                  *output_pins_it++));
+      pin_items.push_back(
+          PinItem(port.name, PinItem::Direction::Output, *output_pins_it++));
     }
   }
   return pin_items;

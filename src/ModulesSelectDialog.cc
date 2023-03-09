@@ -63,9 +63,11 @@ void ModulesSelectDialog::updateListWidget() {
   list_widget_->addItems(items_);
 }
 
+void ModulesSelectDialog::clear() { items_.clear(); }
+
 void ModulesSelectDialog::accept() {
   if (list_widget_->currentItem()) {
-    emit itemSelected(list_widget_->currentRow());
+    emit itemSelected(list_widget_->currentItem()->text());
   }
   QDialog::accept();
   QDialog::close();

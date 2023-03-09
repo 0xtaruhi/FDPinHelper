@@ -88,7 +88,7 @@ void PinTableWidget::initTableView() {
   header->setStretchLastSection(true);
 }
 
-void PinTableWidget::updateItem(const size_t index, const PinItem &item) {
+void PinTableWidget::updateItem(const qsizetype index, const PinItem &item) {
   Q_ASSERT(index < pin_items_.size());
   auto &pin = pin_items_[index];
   pin.setName(item.name());

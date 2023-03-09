@@ -14,7 +14,7 @@ find_package(QT NAMES Qt6 REQUIRED Widgets LinguistTools)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets LinguistTools)
 
 add_subdirectory(3rdparty/FlatUI)
-add_subdirectory(3rdparty/AutoAssignment)
+# add_subdirectory(3rdparty/AutoAssignment)
 
 file(GLOB PROJECT_SOURCES
     "src/*.cc"
@@ -45,9 +45,11 @@ qt_add_resources(${PROJECT_NAME} "translations" PREFIX "/translations" BASE ${CM
 
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR}/bin)
 
-target_link_libraries(${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Widgets flatui autoassignment)
-target_include_directories(${PROJECT_NAME} PRIVATE include 3rdparty/FlatUI 3rdparty/AutoAssignment/include 3rdparty/AutoAssignment/verilog-parser)
+target_link_libraries(${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Widgets flatui)
+target_include_directories(${PROJECT_NAME} PRIVATE include 3rdparty/FlatUI)
 target_include_directories(${PROJECT_NAME} PRIVATE ${Qt${QT_VERSION_MAJOR}Widgets_INCLUDE_DIRS})
+
+target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Werror)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
     MACOSX_BUNDLE_GUI_IDENTIFIER fudan.edu.cn

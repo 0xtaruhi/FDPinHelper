@@ -20,11 +20,11 @@ using namespace pinhelper;
 
 PinHelper::PinHelper(QWidget *parent) : QMainWindow(parent) {
   initUi();
-  initConnections();
-
   auto_assign_handler_ = new AutoAssignHandler(this);
   export_handler_ = new ExportHandler(this);
   export_handler_->setPinTableWidget(pin_table_);
+  module_select_dialog_handler_ = new ModulesSelectDialog(this);
+  initConnections();
 }
 
 PinHelper::~PinHelper() = default;
@@ -121,36 +121,14 @@ void PinHelper::initConnections() {
           &on_explicit_clock_checkbox_stateChanged);
 
   connect(export_btn_, &QPushButton::clicked, this, &on_export_btn_clicked);
+  connect(auto_assign_handler_, &AutoAssignHandler::multipleModulesFound, this,
+          &multiModulesProcess);
+  connect(module_select_dialog_handler_, &ModulesSelectDialog::itemSelected, this,
+          &on_module_selected);
 }
 
 void PinHelper::probeVerilogFile() {
   auto filepath = filepath_line_edit_->text();
-
-  auto multiModulesProcess = [=](const QStringList &module_names) {
-    auto module_index = 0;
-    auto module_num = module_names.size();
-    auto module_select_dialog = new ModulesSelectDialog();
-
-    module_select_dialog->addItems(module_names);
-    module_select_dialog->updateListWidget();
-
-    auto itemSelected = [&module_index](const size_t index) {
-      module_index = index;
-    };
-    auto rejected = [&module_index]() { module_index = -1; };
-
-    connect(module_select_dialog, &ModulesSelectDialog::itemSelected,
-            itemSelected);
-    connect(module_select_dialog, &ModulesSelectDialog::rejected, rejected);
-
-    module_select_dialog->exec();
-    if (module_index == -1) {
-      return;
-    }
-    this->auto_assign_handler_->setModuleName(module_names[module_index]);
-  };
-  connect(auto_assign_handler_, &AutoAssignHandler::multipleModulesFound,
-          multiModulesProcess);
 
   try {
     auto_assign_handler_->setFilepath(filepath);
@@ -175,6 +153,14 @@ void PinHelper::probeVerilogFile() {
   }
 
   pin_table_->addItems(pins);
+}
+
+void PinHelper::multiModulesProcess(const QStringList &module_names) {
+  module_select_dialog_handler_->clear();
+  module_select_dialog_handler_->addItems(module_names);
+  module_select_dialog_handler_->updateListWidget();
+
+  module_select_dialog_handler_->exec();
 }
 
 void PinHelper::on_import_btn_clicked() {
@@ -203,7 +189,7 @@ void PinHelper::on_import_btn_clicked() {
   connect(file_dialog, &QFileDialog::finished, dialogClosed);
   connect(file_dialog, &QFileDialog::fileSelected, fileSelected);
 
-  file_dialog->show();
+  file_dialog->exec();
 }
 
 void PinHelper::on_export_btn_clicked() {
@@ -228,4 +214,8 @@ void PinHelper::on_explicit_clock_checkbox_stateChanged(int state) {
     explicit_clock_line_edit_->setHidden(false);
     explicit_clock_label_->setHidden(false);
   }
+}
+
+void PinHelper::on_module_selected(const QString& module_name) {
+  auto_assign_handler_->setModuleName(module_name);
 }

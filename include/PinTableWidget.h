@@ -79,7 +79,7 @@ class PinTableWidget : public QWidget {
 
   /// @brief Update Specific Item.
   /// @param item Item.
-  void updateItem(const size_t index, const PinItem &item);
+  void updateItem(const qsizetype index, const PinItem &item);
 
   /// @brief Update All Items.
   void updateItems();

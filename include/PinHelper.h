@@ -9,10 +9,11 @@
 #include <QMainWindow>
 #include <QPushButton>
 
-#include "FlatUI.h"
-#include "PinTableWidget.h"
 #include "AutoAssignHandler.h"
 #include "ExportHandler.h"
+#include "FlatUI.h"
+#include "ModulesSelectDialog.h"
+#include "PinTableWidget.h"
 
 namespace pinhelper {
 
@@ -20,19 +21,19 @@ namespace pinhelper {
 class PinHelper : public QMainWindow {
   Q_OBJECT
 
- public:
+public:
   /// @brief Constructor.
   /// @param parent Parent widget.
-  PinHelper(QWidget* parent = nullptr);
+  PinHelper(QWidget *parent = nullptr);
 
   /// @brief Destructor.
   ~PinHelper() override;
 
- protected:
+protected:
   /// @brief Size Hint
   QSize sizeHint() const override;
 
- private:
+private:
   /// @brief Initialize the UI.
   void initUi();
 
@@ -42,7 +43,11 @@ class PinHelper : public QMainWindow {
   /// @brief Probes the verilog file and updates the pin table.
   void probeVerilogFile();
 
- private slots:
+  /// @brief Multi-Modules Process. It will show a dialog to let the user select
+  /// a module.
+  void multiModulesProcess(const QStringList& module_names);
+
+private slots:
   /// @brief Slot. Open file dialog when import button is clicked.
   void on_import_btn_clicked();
 
@@ -51,25 +56,29 @@ class PinHelper : public QMainWindow {
 
   void on_explicit_clock_checkbox_stateChanged(int state);
 
- private:
-  PinTableWidget* pin_table_;
+  void on_module_selected(const QString& module_name);
 
-  QLabel* filepath_label_;
-  QLineEdit* filepath_line_edit_;
-  QCheckBox* explicit_clock_checkbox_;
-  QLabel* explicit_clock_label_;
-  QLineEdit* explicit_clock_line_edit_;
+private:
+  PinTableWidget *pin_table_;
 
-  QPushButton* import_btn_;
-  QPushButton* export_btn_;
+  QLabel *filepath_label_;
+  QLineEdit *filepath_line_edit_;
+  QCheckBox *explicit_clock_checkbox_;
+  QLabel *explicit_clock_label_;
+  QLineEdit *explicit_clock_line_edit_;
 
-  QLabel* export_type_label_;
-  QComboBox* export_type_combo_box_;
+  QPushButton *import_btn_;
+  QPushButton *export_btn_;
 
-  AutoAssignHandler* auto_assign_handler_;
-  ExportHandler* export_handler_;
+  QLabel *export_type_label_;
+  QComboBox *export_type_combo_box_;
+
+  AutoAssignHandler *auto_assign_handler_;
+  ExportHandler *export_handler_;
+
+  ModulesSelectDialog *module_select_dialog_handler_;
 };
 
-}  // namespace pinhelper
+} // namespace pinhelper
 
-#endif  // PIN_HELPER_H
+#endif // PIN_HELPER_H

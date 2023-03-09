@@ -31,6 +31,9 @@ class ModulesSelectDialog : public QDialog {
   /// @brief Method. Update the list widget.
   void updateListWidget();
 
+  /// @brief Method. Clear all items in the list.
+  void clear();
+
  private:
   /// @brief Initialize the UI.
   void initUi();
@@ -53,7 +56,7 @@ class ModulesSelectDialog : public QDialog {
   void on_cancel_btn_clicked();
 
  signals:
-  void itemSelected(const size_t index);
+  void itemSelected(const QString& module_name);
 
  private:
   QStringList items_;
