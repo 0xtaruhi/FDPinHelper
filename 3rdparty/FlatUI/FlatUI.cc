@@ -1,6 +1,6 @@
 #pragma execution_character_set("utf-8")
 
-#include "flatui.h"
+#include "FlatUI.h"
 
 #include "qcheckbox.h"
 #include "qdebug.h"

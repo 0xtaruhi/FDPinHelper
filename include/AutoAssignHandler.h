@@ -3,7 +3,7 @@
 
 #include <QFile>
 #include <QObject>
-#include <Qstring>
+#include <QString>
 
 #include "PinTableWidget.h"
 #include "RegExpPortExtract.h"

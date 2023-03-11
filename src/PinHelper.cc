@@ -119,15 +119,15 @@ void PinHelper::initUi() {
 }
 
 void PinHelper::initConnections() {
-  connect(import_btn_, &QPushButton::clicked, this, &on_import_btn_clicked);
+  connect(import_btn_, &QPushButton::clicked, this, &PinHelper::on_import_btn_clicked);
   connect(explicit_clock_checkbox_, &QCheckBox::stateChanged, this,
-          &on_explicit_clock_checkbox_stateChanged);
+          &PinHelper::on_explicit_clock_checkbox_stateChanged);
 
-  connect(export_btn_, &QPushButton::clicked, this, &on_export_btn_clicked);
+  connect(export_btn_, &QPushButton::clicked, this, &PinHelper::on_export_btn_clicked);
   connect(auto_assign_handler_, &AutoAssignHandler::multipleModulesFound, this,
-          &multiModulesProcess);
+          &PinHelper::multiModulesProcess);
   connect(module_select_dialog_handler_, &ModulesSelectDialog::itemSelected,
-          this, &on_module_selected);
+          this, &PinHelper::on_module_selected);
 }
 
 void PinHelper::probeVerilogFile() {
