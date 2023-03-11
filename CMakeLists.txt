@@ -7,8 +7,14 @@ set(CMAKE_AUTORCC ON)
 
 set(CMAKE_CXX_STANDARD 17)
 
-set(CMAKE_PROJECT_INCLUDE_BEFORE "${QT_ROOT_DIR}/Tools/QtCreator/share/qtcreator/package-manager/auto-setup.cmake")
-set(CMAKE_PREFIX_PATH "${QT_ROOT_DIR}/6.4.2/gcc_64")
+# macOS
+if(APPLE)
+    set(CMAKE_PROJECT_INCLUDE_BEFORE "${QT_ROOT_DIR}/Qt Creator.app/Contents/Resources/package-manager/auto-setup.cmake")
+else()
+    set(CMAKE_PROJECT_INCLUDE_BEFORE "${QT_ROOT_DIR}/Tools/QtCreator/share/qtcreator/package-manager/auto-setup.cmake")
+endif()
+
+set(CMAKE_PREFIX_PATH "${QT_ROOT_DIR}/6.4.0/macos")
 
 find_package(QT NAMES Qt6 REQUIRED Widgets LinguistTools)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets LinguistTools)
