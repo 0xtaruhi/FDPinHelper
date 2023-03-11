@@ -31,6 +31,10 @@ void AutoAssignHandler::setModuleName(const QString &module_name) {
   resolvePorts();
 }
 
+const QString &AutoAssignHandler::getModuleName() const noexcept {
+  return module_name_;
+}
+
 void AutoAssignHandler::resolveModules() {
   try {
     extracter_->resolveModules();

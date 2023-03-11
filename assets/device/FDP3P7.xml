@@ -54,6 +54,7 @@
     <input pin="P199" />
     <input pin="P200" />
     <input pin="P201" />
+    <output pin="P7" />
     <output pin="P6" />
     <output pin="P5" />
     <output pin="P4" />

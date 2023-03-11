@@ -39,6 +39,10 @@ class AutoAssignHandler : public QObject {
   /// @param module_name Name of the module.
   void setModuleName(const QString &module_name);
 
+  /// @brief Get the module name.
+  /// @return Module name.
+  const QString &getModuleName() const noexcept;
+
   /// @brief Resolve the verilog file. It has following steps:
   /// 1. Probe the verilog file and get all modules.
   /// 2. If there is only one module, call resolvePorts function.

@@ -4,6 +4,7 @@
 #include <PinTableWidget.h>
 
 #include <QObject>
+#include <QString>
 
 namespace pinhelper {
 /// @breif Class. This class is used to export the pin assignments to a file.
@@ -23,6 +24,10 @@ class ExportHandler : QObject {
   /// @param pin_table_widget Pin table widget.
   void setPinTableWidget(PinTableWidget* pin_table_widget);
 
+  /// @brief Set module name.
+  /// @param module_name Module name.
+  void setModuleName(const QString& module_name);
+
   /// @brief Export the pin assignments to a file.
   /// @param filepath Path of the file.
   /// @param file_type Type of the file.
@@ -39,6 +44,7 @@ class ExportHandler : QObject {
 
  private:
   PinTableWidget* pin_table_widget_;
+  QString module_name_;
 };
 
 }  // namespace pinhelper

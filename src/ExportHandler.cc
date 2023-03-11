@@ -13,6 +13,10 @@ void ExportHandler::setPinTableWidget(PinTableWidget* pin_table_widget) {
   pin_table_widget_ = pin_table_widget;
 }
 
+void ExportHandler::setModuleName(const QString& module_name) {
+  module_name_ = module_name;
+}
+
 void ExportHandler::exportFile(const QString& filepath, FileType file_type) {
   if (file_type == FileType::XML) {
     exportXML(filepath);
@@ -45,7 +49,7 @@ void ExportHandler::exportXML(const QString& filepath) {
   writer.setAutoFormatting(true);
   writer.writeStartDocument();
   writer.writeStartElement("design");
-  writer.writeAttribute("name", "design_name");
+  writer.writeAttribute("name", module_name_);
 
   for (const auto& p : pin_assignments) {
     writer.writeEmptyElement("port");

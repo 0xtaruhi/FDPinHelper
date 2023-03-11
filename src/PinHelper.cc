@@ -198,6 +198,7 @@ void PinHelper::on_import_btn_clicked() {
 void PinHelper::on_export_btn_clicked() {
   auto write_filepath = QFileDialog::getSaveFileName(nullptr, tr("Export"), "",
                                                      tr("XML Files (*.xml)"));
+  export_handler_->setModuleName(auto_assign_handler_->getModuleName());
   try {
     export_handler_->exportFile(write_filepath, "XML");
   } catch (const QString &msg) {
