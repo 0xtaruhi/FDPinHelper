@@ -39,11 +39,14 @@ endforeach()
 
 configure_file(${CMAKE_SOURCE_DIR}/include/Config.h.in ${CMAKE_SOURCE_DIR}/include/Config.h)
 
-qt_add_executable(${PROJECT_NAME}
-    MANUAL_FINALIZATION
-    ${PROJECT_SOURCES}
-    ${QRC_FILES}
-)
+if(APPLE)
+    set(MACOSX_BUNDLE_ICON_FILE mac_icon.icns)
+    set(app_icon_macos "${CMAKE_CURRENT_SOURCE_DIR}/assets/icon/mac_icon.icns")
+    set_source_files_properties(${app_icon_macos} PROPERTIES MACOSX_PACKAGE_LOCATION "Resources")
+    qt_add_executable(${PROJECT_NAME} MANUAL_FINALIZATION MACOSX_BUNDLE ${PROJECT_SOURCES} ${QRC_FILES} ${app_icon_macos})
+else()
+    qt_add_executable(${PROJECT_NAME} MANUAL_FINALIZATION ${PROJECT_SOURCES} ${QRC_FILES})
+endif()
 
 # qt_add_translations(${PROJECT_NAME} TS_FILES ${TS_FILES})
 qt_add_lupdate(${PROJECT_NAME} TS_FILES ${TS_FILES})
