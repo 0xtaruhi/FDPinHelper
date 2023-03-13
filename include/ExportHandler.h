@@ -1,7 +1,7 @@
 #ifndef EXPORT_HANDLER_H
 #define EXPORT_HANDLER_H
 
-#include <PinTableWidget.h>
+#include "PinTableWidget.h"
 
 #include <QObject>
 #include <QString>
