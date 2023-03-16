@@ -14,6 +14,7 @@
 #include "FlatUI.h"
 #include "ModulesSelectDialog.h"
 #include "PinTableWidget.h"
+#include "DevicePinReader.h"
 
 namespace pinhelper {
 
@@ -74,6 +75,8 @@ class PinHelper : public QMainWindow {
   QComboBox *export_type_combo_box_;
 
   AutoAssignHandler *auto_assign_handler_;
+  DevicePinReader *device_pin_reader_;
+  
   ExportHandler *export_handler_;
 
   ModulesSelectDialog *module_select_dialog_handler_;

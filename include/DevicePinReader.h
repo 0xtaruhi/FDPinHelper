@@ -20,10 +20,18 @@ class DevicePinReader : public QObject {
   /// @brief Destructor.
   ~DevicePinReader();
 
+  /// @brief Set the device name.
+  /// @param device_name Name of the device.
+  void setDeviceName(const QString& device_name);
+
   /// @brief Read the device information from the file.
   /// @param filepath Path of Device information file.
   /// @return True if the file is read successfully.
   bool readDeviceInformation(const QString& filepath);
+
+  /// @brief Read the device information from the file.
+  /// @return True if the file is read successfully.
+  bool readDeviceInformation();
 
   /// @brief Get the input pins.
   /// @return List of input pins.
@@ -41,6 +49,8 @@ class DevicePinReader : public QObject {
   QList<QString> input_pins_;
   QList<QString> output_pins_;
   QString clock_pin_;
+  QString device_name_;
+  bool is_loaded_{false};
 };
 
 };  // namespace pinhelper

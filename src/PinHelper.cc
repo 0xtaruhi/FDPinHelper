@@ -20,8 +20,14 @@ constexpr auto kMinimumHeight = 350;
 using namespace pinhelper;
 
 PinHelper::PinHelper(QWidget *parent) : QMainWindow(parent) {
-  initUi();
+  device_pin_reader_ = new DevicePinReader(this);
+  device_pin_reader_->setDeviceName("FDP3P7");
+  device_pin_reader_->readDeviceInformation();
   auto_assign_handler_ = new AutoAssignHandler(this);
+  auto_assign_handler_->setDevicePinReader(device_pin_reader_);
+  initUi();
+  pin_table_->setDevicePinReader(device_pin_reader_);
+
   export_handler_ = new ExportHandler(this);
   export_handler_->setPinTableWidget(pin_table_);
   module_select_dialog_handler_ = new ModulesSelectDialog(this);

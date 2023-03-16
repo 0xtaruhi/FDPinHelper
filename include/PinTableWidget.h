@@ -6,6 +6,10 @@
 #include <QString>
 #include <QTableView>
 #include <QWidget>
+#include <QComboBox>
+
+// #include "ComboBoxItemDelegate.h"
+#include "DevicePinReader.h"
 
 namespace pinhelper {
 
@@ -46,6 +50,10 @@ class PinTableWidget : public QWidget {
   /// @brief Destructor.
   ~PinTableWidget() override;
 
+  /// @brief Method. Set the device pin reader.
+  /// @param device_pin_reader Device pin reader.
+  void setDevicePinReader(DevicePinReader *device_pin_reader);
+
   /// @brief Method. Add Item to the table.
   void addItem(const PinItem &item);
 
@@ -84,9 +92,14 @@ class PinTableWidget : public QWidget {
   void updateItems();
 
  private:
+  QComboBox* createComboBox(const PinItem& pin, const QString& default_pin = "Error");
+
+ private:
   QTableView *table_view_;
   QStandardItemModel *table_model_;
   QList<PinItem> pin_items_;
+  // ComboBoxItemDelegate *combo_box_item_delegate_;
+  DevicePinReader *device_pin_reader_{nullptr};
 };
 
 }  // namespace pinhelper

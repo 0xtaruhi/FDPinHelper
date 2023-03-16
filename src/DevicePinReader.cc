@@ -8,6 +8,10 @@ DevicePinReader::DevicePinReader(QObject* parent) : QObject(parent) {}
 
 DevicePinReader::~DevicePinReader() = default;
 
+void DevicePinReader::setDeviceName(const QString& device_name) {
+  device_name_ = device_name;
+}
+
 bool DevicePinReader::readDeviceInformation(const QString& filepath) {
   QFile file(filepath);
   if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
@@ -35,7 +39,12 @@ bool DevicePinReader::readDeviceInformation(const QString& filepath) {
     }
   }
 
+  is_loaded_ = true;
   return true;
+}
+
+bool DevicePinReader::readDeviceInformation() {
+  return readDeviceInformation(QString(":/device/%1.xml").arg(device_name_));
 }
 
 const QList<QString>& DevicePinReader::getInputPins() const {

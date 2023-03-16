@@ -22,6 +22,14 @@ void AutoAssignHandler::setFilepath(const QString &filepath) {
   extracter_->setFile(filepath);
 }
 
+void AutoAssignHandler::setDevicePinReader(DevicePinReader *device_reader) {
+  if (device_reader == nullptr) {
+    throw QString(tr("Device reader is null"));
+    return;
+  }
+  device_pin_reader_ = device_reader;
+}
+
 void AutoAssignHandler::setModuleName(const QString &module_name) {
   if (module_name.isEmpty()) {
     throw QString(tr("Module name is empty"));
@@ -87,13 +95,12 @@ auto AutoAssignHandler::defaultAssign(const QList<VerilogPort> &ports,
                                       const QString &device_name)
     -> QList<PinTableWidget::PinItem> {
   QList<PinTableWidget::PinItem> pin_items;
-  DevicePinReader device_pin_reader;
-  device_pin_reader.readDeviceInformation(
-      QString(":/device/%1.xml").arg(device_name));
+  // device_pin_reader_->readDeviceInformation(
+  //     QString(":/device/%1.xml").arg(device_name));
 
-  const auto &input_pins = device_pin_reader.getInputPins();
-  const auto &output_pins = device_pin_reader.getOutputPins();
-  const auto &clock_pin = device_pin_reader.getClockPin();
+  const auto &input_pins = device_pin_reader_->getInputPins();
+  const auto &output_pins = device_pin_reader_->getOutputPins();
+  const auto &clock_pin = device_pin_reader_->getClockPin();
 
   auto input_pins_it = input_pins.begin();
   auto output_pins_it = output_pins.begin();

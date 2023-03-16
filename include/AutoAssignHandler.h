@@ -8,6 +8,7 @@
 #include "PinTableWidget.h"
 #include "RegExpPortExtract.h"
 #include "VerilogPort.h"
+#include "DevicePinReader.h"
 
 namespace pinhelper {
 
@@ -29,6 +30,10 @@ class AutoAssignHandler : public QObject {
   /// @brief Set the filepath of the verilog file.
   /// @param filepath Path of the verilog file.
   void setFilepath(const QString &filepath);
+
+  /// @brief set the device pin reader.
+  /// @param device_reader Device Pin reader.
+  void setDevicePinReader(DevicePinReader *device_reader);
 
   /// @brief Set the module name.
   /// @note Module name is always autimatically set when the verilog file has
@@ -57,7 +62,7 @@ class AutoAssignHandler : public QObject {
   /// @return List of ports.
   const QList<VerilogPort> &getPorts() const noexcept;
 
-  static QList<PinTableWidget::PinItem> defaultAssign(
+  QList<PinTableWidget::PinItem> defaultAssign(
       const QList<VerilogPort> &ports, const QString &clk_name = "clk",
       const QString &device_name = "FDP3P7");
 
@@ -74,6 +79,7 @@ class AutoAssignHandler : public QObject {
 
   QList<VerilogPort> ports_;      ///< List of ports.
   RegExpPortExtract *extracter_;  ///< RegExpPortExtract instance
+  DevicePinReader *device_pin_reader_;  ///< DevicePinReader instance
 };
 
 }  // namespace pinhelper

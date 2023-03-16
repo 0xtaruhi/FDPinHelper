@@ -1,7 +1,10 @@
 #include "PinTableWidget.h"
 
+#include <QComboBox>
 #include <QHeaderView>
 #include <QList>
+
+// #include "ComboBoxItemDelegate.h"
 
 using namespace pinhelper;
 
@@ -20,11 +23,11 @@ auto getDirectionName(const PinTableWidget::PinItem::Direction &direction) {
 }
 
 auto getRow(const PinTableWidget::PinItem &pin) {
-  QList<QStandardItem *> row;
-  row.resize(3);
-  row[0] = new QStandardItem(pin.name());
-  row[1] = new QStandardItem(getDirectionName(pin.direction()));
-  row[2] = new QStandardItem(pin.pin());
+  QList<QStandardItem *> row({
+      new QStandardItem(pin.name()),
+      new QStandardItem(getDirectionName(pin.direction()))
+      // new QStandardItem(pin.pin())
+  });
   return row;
 }
 
@@ -35,9 +38,15 @@ PinTableWidget::PinTableWidget(QWidget *parent) : QWidget(parent) {
 
 PinTableWidget::~PinTableWidget() = default;
 
+void PinTableWidget::setDevicePinReader(DevicePinReader *device_pin_reader) {
+  device_pin_reader_ = device_pin_reader;
+}
+
 void PinTableWidget::addItem(const PinItem &item) {
   pin_items_.push_back(item);
   table_model_->appendRow(getRow(item));
+  table_view_->setIndexWidget(table_model_->index(pin_items_.size() - 1, 2),
+                              createComboBox(item, item.pin()));
 }
 
 void PinTableWidget::addItems(const QList<PinItem> &items) {
@@ -87,7 +96,9 @@ void PinTableWidget::initTableView() {
   header->setMinimumWidth(80);
   header->setStretchLastSection(true);
 
-  table_view_->setEditTriggers(QAbstractItemView::NoEditTriggers);
+  // combo_box_item_delegate_ = new ComboBoxItemDelegate(this);
+  // table_view_->setItemDelegateForColumn(2, combo_box_item_delegate_);
+  // table_view_->setEditTriggers(QAbstractItemView::NoEditTriggers);
 }
 
 void PinTableWidget::updateItem(const qsizetype index, const PinItem &item) {
@@ -98,7 +109,25 @@ void PinTableWidget::updateItem(const qsizetype index, const PinItem &item) {
   pin.setPin(item.pin());
 
   auto row = getRow(pin);
-  for (int i = 0; i < row.size(); ++i) {
-    table_model_->setItem(index, i, row[i]);
+  for (qsizetype i = 0; i != row.size(); ++i) {
+    table_model_->setItem(index, static_cast<int>(i), row[i]);
   }
+}
+
+QComboBox *PinTableWidget::createComboBox(const PinItem &pin, const QString& default_pin) {
+  QComboBox *cb = new QComboBox(this);
+  if (device_pin_reader_) {
+    switch (pin.direction()) {
+      case PinItem::Direction::Input:
+        cb->addItems(device_pin_reader_->getInputPins());
+        break;
+      case PinItem::Direction::Output:
+        cb->addItems(device_pin_reader_->getOutputPins());
+        break;
+      default:
+        break;
+    };
+    cb->setCurrentText(default_pin);
+  }
+  return cb;
 }
