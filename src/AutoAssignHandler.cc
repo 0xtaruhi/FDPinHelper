@@ -118,6 +118,7 @@ auto AutoAssignHandler::defaultAssign(const QList<VerilogPort> &ports,
       }
       pin_items.push_back(
           PinItem(port.name, PinItem::Direction::Input, clock_pin));
+      pin_items.back().setClock(true);
       clock_found = true;
       continue;
     } else if (port.direction == VerilogPortDirection::INPUT) {

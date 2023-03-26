@@ -31,15 +31,18 @@ class PinTableWidget : public QWidget {
     auto name() const { return name_; }
     auto direction() const { return direction_; }
     auto pin() const { return pin_; }
+    auto isClock() const { return is_clock_; }
 
     auto setName(const QString &name) { name_ = name; }
     auto setDirection(Direction direction) { direction_ = direction; }
     auto setPin(const QString &pin) { pin_ = pin; }
+    auto setClock(bool is_clock) { is_clock_ = is_clock; }
 
    private:
     QString name_;
     Direction direction_;
     QString pin_;
+    bool is_clock_{false};
   };
 
  public:

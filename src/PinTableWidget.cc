@@ -114,19 +114,24 @@ void PinTableWidget::updateItem(const qsizetype index, const PinItem &item) {
   }
 }
 
-QComboBox *PinTableWidget::createComboBox(const PinItem &pin, const QString& default_pin) {
+QComboBox *PinTableWidget::createComboBox(const PinItem &pin,
+                                          const QString &default_pin) {
   QComboBox *cb = new QComboBox(this);
   if (device_pin_reader_) {
-    switch (pin.direction()) {
-      case PinItem::Direction::Input:
-        cb->addItems(device_pin_reader_->getInputPins());
-        break;
-      case PinItem::Direction::Output:
-        cb->addItems(device_pin_reader_->getOutputPins());
-        break;
-      default:
-        break;
-    };
+    if (pin.isClock()) {
+      cb->addItem(device_pin_reader_->getClockPin());
+    } else {
+      switch (pin.direction()) {
+        case PinItem::Direction::Input:
+          cb->addItems(device_pin_reader_->getInputPins());
+          break;
+        case PinItem::Direction::Output:
+          cb->addItems(device_pin_reader_->getOutputPins());
+          break;
+        default:
+          break;
+      };
+    }
     cb->setCurrentText(default_pin);
   }
   return cb;
